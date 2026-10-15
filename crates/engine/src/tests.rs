@@ -3425,6 +3425,23 @@ fn page_and_table_gridlines_toggle_independently() {
     assert_eq!(state["tableGridlines"], false);
 }
 
+#[test]
+fn vertical_page_movement_preserves_zoom_and_document() {
+    let mut s = s();
+    run(&mut s, "view.sideToSide", json!({}));
+    run(&mut s, "view.zoom", json!({"value": 68}));
+    let dirty = s.dirty;
+    let result = run(&mut s, "view.vertical", json!({}));
+    assert_eq!(result["pageMovement"], "vertical");
+    assert!(s.view.single_column && !s.view.multi_page && s.view.fit.is_empty());
+    assert_eq!(s.view.zoom, 0.68);
+    assert_eq!(s.dirty, dirty, "changing page movement does not edit the document");
+    run(&mut s, "view.zoomOut", json!({}));
+    assert!(s.view.single_column);
+    run(&mut s, "view.sideToSide", json!({}));
+    assert!(!s.view.single_column && s.view.multi_page);
+}
+
 /// Issue #768: zooming by percent after One Page or Page Width keeps one page per row.
 #[test]
 fn zoom_after_one_page_keeps_single_column() {

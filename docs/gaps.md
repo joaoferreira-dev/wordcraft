@@ -1,6 +1,6 @@
 # Where WordCraft falls short of Word
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-14 · **Change:** trivial (re-audited every row against main: stale PR and issue states, counts and landed items corrected; previously trivial: #21: .xls recipient lists, legacy-encoding CSV, recipient filter and sort, #778; previously trivial: title rename and account settings; previously trivial: ODT tracked insertions and deletions, gap 19; previously trivial: RTF tracked insertions and deletions, gap 19; previously trivial: the Font list no longer keeps every previewed font in memory, #848; previously trivial: table column and row markers on the rulers, #700; previously trivial: table borders and the resize handle drag on the page, #217; previously trivial: formatting revisions landed, #41; previously trivial: Draw Table and Eraser landed, #303; previously minor: beta distance restated: ~15 points, ~150–230 h; previously: first version; every known shortfall from the 2026-10-10 re-measure, ranked) · **Target:** Microsoft Word (Microsoft 365) for Mac 16.113.4
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-14 · **Change:** trivial (Vertical page movement keeps one page per row; previously trivial: re-audited every row against main: stale PR and issue states, counts and landed items corrected; previously trivial: #21: .xls recipient lists, legacy-encoding CSV, recipient filter and sort, #778; previously trivial: title rename and account settings; previously trivial: ODT tracked insertions and deletions, gap 19; previously trivial: RTF tracked insertions and deletions, gap 19; previously trivial: the Font list no longer keeps every previewed font in memory, #848; previously trivial: table column and row markers on the rulers, #700; previously trivial: table borders and the resize handle drag on the page, #217; previously trivial: formatting revisions landed, #41; previously trivial: Draw Table and Eraser landed, #303; previously minor: beta distance restated: ~15 points, ~150–230 h; previously: first version; every known shortfall from the 2026-10-10 re-measure, ranked) · **Target:** Microsoft Word (Microsoft 365) for Mac 16.113.4
 
 > **Printing update:** 2026-10-12 · direct desktop printing through craft-print; details below.
 
@@ -16,6 +16,8 @@ Local desktop recovery now covers unsaved drafts and edits to existing files; se
 establish cross-platform reliability.
 
 Document renaming: desktop renaming requires a filesystem that supports hard links (exFAT/FAT drives and some network shares refuse it). Behaviour: [UI parity](ui-parity.md).
+
+Vertical page movement now explicitly keeps one page per row, including after zoom changes. Side to Side and Multiple Pages can restore multiple columns. This fixes the Vertical command leaving pages side by side at low zoom; broader view parity is unchanged.
 
 ## Ranked
 
@@ -87,6 +89,7 @@ The same gaps grouped the way the parity documents are, for agents working in on
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-14 | trivial | Vertical page movement explicitly selects one column and keeps it after zoom changes; regression covers automatic columns, Side to Side and Multiple Pages. |
 | 2026-10-12 | trivial | Re-audited every row against main: #9 narrowed to encrypted `.doc` (#281), #15 sources saved in DOCX (#790), #10 group landed (#267), #11 French landed (#729), #12 Draw 10/11, #16 #215 closed, #17 `para.asianTypography` live, #3 closed reports and 197 open issues, #8/#19/#21/#25/#27 open PRs named, evidence counts refreshed |
 | 2026-10-12 | trivial | Document title opens Rename Document; the account badge opens Options › General for user name and initials. |
 | 2026-10-13 | trivial | Replace All checks content-control locks before editing; a refused batch leaves the document and undo history unchanged; existing deletion-lock rules reused, with tracked/untracked regression coverage |

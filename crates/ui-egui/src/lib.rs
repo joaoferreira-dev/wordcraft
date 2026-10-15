@@ -3562,6 +3562,56 @@ mod tests {
         assert_eq!(caret.page, 3);
     }
 
+    /// Vertical overrides automatic columns and Side to Side, including after a zoom change.
+    #[test]
+    fn vertical_page_movement_stacks_pages_after_side_to_side() {
+        let ctx = egui::Context::default();
+        let mut a = app();
+        for _ in 0..3 {
+            a.run("insert.pageBreak", json!({})).unwrap();
+        }
+        let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1280.0, 800.0));
+        let mut t = 0.0;
+        let mut frame = |a: &mut WordApp| {
+            t += 1.0 / 60.0;
+            let input = egui::RawInput { time: Some(t), screen_rect: Some(screen), ..Default::default() };
+            ctx.run_ui(input, |ui| {
+                a.logic(ui.ctx());
+                a.ui(ui);
+            })
+            .drop_without_applying_deltas();
+        };
+        a.run("view.zoom", json!({"value": 30})).unwrap();
+        for _ in 0..3 {
+            frame(&mut a);
+        }
+        assert_eq!(a.canvas.cols, 4, "low zoom initially fits four pages across");
+        for source in [None, Some("view.sideToSide"), Some("view.multiplePages")] {
+            if let Some(command) = source {
+                a.run(command, json!({})).unwrap();
+                for _ in 0..3 {
+                    frame(&mut a);
+                }
+                assert!(a.canvas.cols > 1, "{command} restores multiple columns");
+            }
+            let zoom = a.session.view.zoom;
+            a.run("view.vertical", json!({})).unwrap();
+            assert_eq!(a.session.view.zoom, zoom, "Vertical preserves the visible zoom");
+            for _ in 0..3 {
+                frame(&mut a);
+            }
+            assert_eq!(a.canvas.cols, 1, "Vertical stacks pages after {source:?}");
+            let rects = &a.canvas.page_rects;
+            assert_eq!(rects.len(), 4);
+            assert!(rects.windows(2).all(|pair| pair[1].top() > pair[0].bottom()));
+            a.run("view.zoom", json!({"value": 30})).unwrap();
+            for _ in 0..3 {
+                frame(&mut a);
+            }
+            assert_eq!(a.canvas.cols, 1, "zooming out preserves Vertical");
+        }
+    }
+
     /// Issue #768: after One Page, zooming out (Zoom Out, the Zoom box, Ctrl + wheel) keeps one page per row.
     #[test]
     fn zoom_after_one_page_keeps_one_page_per_row() {
