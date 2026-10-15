@@ -138,7 +138,7 @@ pub struct ViewState {
     #[serde(default)]
     pub alt_text_pane: bool,
     pub multi_page: bool,
-    /// One Page or Page Width was chosen last: keep one page per row when a typed or wheel zoom replaces the fit mode.
+    /// Vertical, One Page or Page Width was chosen last: keep one page per row when a typed or wheel zoom replaces the fit mode.
     #[serde(default)]
     pub single_column: bool,
     /// Zoom to fit: "pageWidth", "onePage", "multiplePages", or empty.

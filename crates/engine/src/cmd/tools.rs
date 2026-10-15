@@ -663,6 +663,7 @@ pub fn specs() -> Vec<CommandSpec> {
         .pure(),
         CommandSpec::new("view.vertical", "Vertical", "View › Page Movement", |s, _| {
             s.view.multi_page = false;
+            s.view.single_column = true;
             s.view.fit.clear();
             Ok(json!({"pageMovement": "vertical"}))
         })
